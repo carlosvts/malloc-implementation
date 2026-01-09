@@ -146,6 +146,23 @@ void my_free(void* ptr)
 
 }
 
+void* my_calloc(size_t n, size_t size)
+{
+    // overflow checking 
+    // size_t * n = max 
+    // so the max value of size_t is max / n 
+    // since size_t is unsigned, his max value is (size_t) -1
+    if (n != 0 && size > (size_t)-1/n) { return nullptr; }
+
+    size_t totalSize = n * size; 
+    void* ptr = my_alloc(totalSize);
+    
+    if (!ptr) { return nullptr; }
+
+    memset(ptr, 0, totalSize);
+    return ptr; 
+}
+
 void* my_realloc(void* ptr, std::size_t size)
 {   
     // case ptr is NULL 

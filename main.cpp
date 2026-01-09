@@ -55,4 +55,42 @@ int main()
     my_free(p1_moved);
     my_free(p2);
     debug_heap();
+
+    // --- TEST 6: Calloc (Zero Initialization) ---
+    std::cout << "\nTest 6: Testing my_calloc (10 integers, should be all zeros)..." << std::endl;
+    
+    // Alocando 10 inteiros
+    size_t num_elements = 10;
+    int* p_calloc = (int*)my_calloc(num_elements, sizeof(int));
+    
+    if (p_calloc) {
+        bool is_zeroed = true;
+        std::cout << "Values: [ ";
+        for (size_t i = 0; i < num_elements; i++) {
+            std::cout << p_calloc[i] << " ";
+            if (p_calloc[i] != 0) is_zeroed = false;
+        }
+        std::cout << "]" << std::endl;
+
+        if (is_zeroed) {
+            std::cout << "SUCCESS: All memory initialized to zero." << std::endl;
+        } else {
+            std::cout << "FAILURE: Memory contains garbage/junk values." << std::endl;
+        }
+    }
+    
+    debug_heap();
+    my_free(p_calloc);
+    
+    // --- TEST 7: Calloc Overflow Prevention ---
+    std::cout << "\nTest 7: Testing my_calloc overflow protection..." << std::endl;
+    // calloc(ing) a value close to size_t limit
+    void* p_overflow = my_calloc((size_t)-1 / 2, 4); 
+    
+    if (p_overflow == nullptr) {
+        std::cout << "SUCCESS: Overflow detected and allocation prevented." << std::endl;
+    } else {
+        std::cout << "FAILURE: Allocator did not catch the overflow!" << std::endl;
+        my_free(p_overflow);
+    }
 }
