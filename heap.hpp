@@ -13,7 +13,11 @@ struct Chunk
     Chunk* prev = nullptr; // previous chunk
     void* data; // data
 };
+extern Chunk* globalBase;
+extern Chunk* globalLast;
+
 void* requestSpace(std::size_t space);
 Chunk* findFreeBlock(std::size_t space);
+void* my_alloc(std::size_t size); 
 void my_free(void* ptr);
 #endif

@@ -125,8 +125,8 @@ void my_free(void* ptr)
             // removes chunk of data
             chunk->next = nullptr;
             sbrk(-(chunk->size + sizeof(Chunk)));
+            return;
         }
-        return;
     }
     // Coalesce behind memory 
     if (chunk->prev == nullptr) {globalBase = chunk;}
