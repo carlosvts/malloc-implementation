@@ -67,10 +67,11 @@ g++ main.cpp heap.cpp -o allocator
 
 ```Markdown
 📁 Project
-├── 📄 heap.hpp         # Declarations, Chunk struct, and Global State
-├── 📄 heap.cpp         # Implementation of my_alloc, my_free, and my_realloc
-├── 📄 main.cpp         # Debug suite and heap state visualization
-└── 📄 .gitignore       # Prevents tracking of binaries
+├── 📄 heap.hpp            # Declarations, Chunk struct, and Global State
+├── 📄 heap.cpp            # Implementation of my_alloc, my_free, and my_realloc
+├── 📄 main.cpp            # Debug suite and heap state visualization
+├── 📄 os-architecture.jpg # Mental map of OS Architecture and extra annotations
+└── 📄 .gitignore          # Prevents tracking of binaries
 ```
 
 ## Resources
