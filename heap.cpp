@@ -5,6 +5,7 @@
 
 Chunk* globalBase = nullptr;
 Chunk* globalLast = nullptr;
+constexpr const size_t SIZE_4KB = 4096;
 
 size_t align(size_t n)
 {
@@ -88,13 +89,60 @@ void my_free(void* ptr)
     // -1 because we are subtracting the header
     // like: - sizeof(Chunk). pointer arithmetic
     Chunk* chunk = static_cast<Chunk*>(ptr) - 1;
+    chunk->isFree = true;
+ 
     // if next has something
-    if (chunk->next != nullptr && chunk->next->isFree)
+    while(chunk->next != nullptr && chunk->next->isFree)
     {
+        // Coalesce the next and the prev
         chunk->size += sizeof(Chunk) + chunk->next->size;
         chunk->next = chunk->next->next;
+        // if have next, set the next to the new chunk
+        if (chunk->next != nullptr)
+        {
+            chunk->next->prev = chunk;
+        }
+        else { globalLast = chunk; }
+
     }
-    chunk->isFree = true;
+    // Trimming
+    if (chunk == globalLast)
+    {
+        if (chunk->size >= SIZE_4KB)
+        {
+            // previous points to nothing
+            // in case freeing just a single chunk of memory
+            if (chunk->prev != nullptr)
+            {
+                chunk->prev->next = nullptr;
+                globalLast = chunk->prev;
+            }
+            else // if previous is null, we set our global to null 
+            {
+                globalBase = nullptr; 
+                globalLast = nullptr;
+            }
+            // removes chunk of data
+            chunk->next = nullptr;
+            sbrk(-(chunk->size + sizeof(Chunk)));
+        }
+        return;
+    }
+    // Coalesce behind memory 
+    if (chunk->prev == nullptr) {globalBase = chunk;}
+    // same thing, but linking the back one 
+    if (chunk->prev != nullptr && chunk->prev->isFree)
+    {
+        // A                   C 
+        chunk->prev->next = chunk->next;
+        // checks if next exists
+        if (chunk->next != nullptr)
+        {
+            chunk->next->prev = chunk->prev;
+        }
+        else{ globalLast = chunk->prev; }
+        chunk->prev->size += sizeof(Chunk) + chunk->size;
+    }
 
 }
 
