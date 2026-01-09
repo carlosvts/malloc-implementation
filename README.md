@@ -79,7 +79,10 @@ This project was developed for educational purposes to learn low-level memory ma
 
 Paraphrasing LowLevelLearning:
 
-This memory allocator is safe? No
-Is optimized? Probably no 
+This memory allocator is safe? no
+
+Is optimized? Probably no
+
 I have fun with it? yes
+
 I have learn with it? a lot.
