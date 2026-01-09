@@ -13,6 +13,7 @@ struct Chunk
     Chunk* prev = nullptr; // previous chunk
     void* data; // data
 };
-void requestSpace(std::size_t space);
+void* requestSpace(std::size_t space);
 Chunk* findFreeBlock(std::size_t space);
+void my_free(void* ptr);
 #endif
