@@ -20,4 +20,5 @@ void* requestSpace(std::size_t space);
 Chunk* findFreeBlock(std::size_t space);
 void* my_alloc(std::size_t size); 
 void my_free(void* ptr);
+void* my_realloc(void* ptr, std::size_t size);
 #endif

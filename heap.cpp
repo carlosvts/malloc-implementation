@@ -1,4 +1,5 @@
 #include "heap.hpp"
+#include <cstring>
 #include <errno.h>
 #include <iostream>
 #include <unistd.h>
@@ -103,7 +104,6 @@ void my_free(void* ptr)
             chunk->next->prev = chunk;
         }
         else { globalLast = chunk; }
-
     }
     // Trimming
     if (chunk == globalLast)
@@ -144,5 +144,64 @@ void my_free(void* ptr)
         chunk->prev->size += sizeof(Chunk) + chunk->size;
     }
 
+}
+
+void* my_realloc(void* ptr, std::size_t size)
+{   
+    // case ptr is NULL 
+    if (!ptr) { return my_alloc(size); }
+
+    // getting headers
+    Chunk* chunk = static_cast<Chunk*>(ptr) - 1;
+    // already big enough
+    if (chunk->size == size) { return ptr; }
+    // increase size 
+    if (chunk->size < size)
+    {
+        // if has something in front
+        if (chunk->next != nullptr && chunk->next->isFree == true && (chunk->size + sizeof(Chunk) + chunk->next->size) >= size)
+        {
+            chunk->size += sizeof(Chunk) + chunk->next->size;
+            if (chunk->next->next == nullptr)
+            {
+                globalLast = chunk;
+            }
+            // A               C 
+            chunk->next = chunk->next->next;
+            // [A CHUNK] <-> [B CHUNK NEXT] <-> [C CHUNK NEXT NEXT]
+            // [A CHUNK] <-> [C CHUNK->NEXT]
+            if (chunk->next != nullptr) { chunk->next->prev = chunk; }
+            return ptr; 
+        }
+        // if not, resize by getting more memory 
+        else 
+        {
+            void* moreMem = my_alloc(size);
+            memcpy(moreMem, ptr, chunk->size);
+            my_free(chunk + 1); // header and data
+            return moreMem; 
+        }
+    }
+    // decrease size
+    // (1) [A] <-> [cut and chunk] ------>|  points to B
+    // then, this happens
+    // (2) [A] <-> [chunk] <-> [cut] <-> [B]
+    Chunk* cut = reinterpret_cast<Chunk*>((uint8_t*)ptr + size);
+    cut->size = chunk->size - size - sizeof(Chunk);
+    chunk->size = size;
+   
+    // (1)
+    cut->next = chunk->next;
+    
+    // (2)
+    if (cut->next != nullptr)
+    {
+        cut->next->prev = cut;
+    }
+    cut->prev = chunk;
+    chunk->next = cut; 
+    
+    my_free(cut + 1);
+    return ptr;
 }
 
