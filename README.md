@@ -73,6 +73,16 @@ g++ main.cpp heap.cpp -o allocator
 └── 📄 .gitignore       # Prevents tracking of binaries
 ```
 
+## Resources
+Key resources used for understanding Memory Alignment, Heap architecture and Syscalls:
+
+* **Man sbrk(2)**: [Linux manual page for program break manipulation](https://man7.org/linux/man-pages/man2/sbrk.2.html)
+* **Man brk(2)**: [Linux manual page for data segment management](https://man7.org/linux/man-pages/man2/brk.2.html)
+* **Build your own Memory Allocator**: [Giovanni Iannaccone (Medium)](https://medium.com/@iannacconegiovanni444/build-your-own-memory-allocator-a5f58763083d)
+* **Low Level Learning**: [How to Build Your Own Malloc](https://www.youtube.com/watch?v=sZ8HJ17m0eM)
+* **LaurieWired**: [Dynamic Memory Allocation (C, C++, Assembly)](https://www.youtube.com/watch?v=kYJmvZvUv8E)
+
+
 ## Reminder
 
 This project was developed for educational purposes to learn low-level memory management and the interface between user-space and the Linux Kernel. Modern allocators are highly optimized for multithreading and safety, the goal here was to experience through the manual pointer arithmetic and linked list costuring to understand how memory actually behaves before it reaches higher-level abstractions.
